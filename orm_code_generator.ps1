@@ -91,7 +91,7 @@ function GenerateORMCode
 	[string]$project_title = "MyProject",
 	[string]$filter = "*",
 	[string]$dtx_type = "MyDataContext",
-	[string]$relations = ""	
+	[array]$relations = @()
 )
 {
 
@@ -190,7 +190,7 @@ function GenerateORMCode
 			$r.Dispose() | Out-Null
 			$cmd.Dispose() | Out-Null	
 				
-			if ($relations -eq "")
+			if ($relations.Length -eq 0)
 			{
 				# if relations rules are not ovirriden, then try to evaluate them from foreign keys				
 				# when the table is child
@@ -232,7 +232,7 @@ function GenerateORMCode
 				$parents = @()
 				$children = @()
 				foreach ($rx in $relations)
-				{
+				{					
 					if ($rx -match "\w->\w")
 					{
 						$rxx = $rx.Split("->")
@@ -262,16 +262,15 @@ function GenerateORMCode
 	}
 
 	$cn.Dispose() | Out-Null
-
-
+	
 	#===========================================================================
 	#code generation
 	#===========================================================================
 
 
-	mkdir "DomainModels"
-	mkdir "Repositories"
-	mkdir "DataContexts"
+	mkdir "DomainModels" -Force
+	mkdir "Repositories" -Force
+	mkdir "DataContexts" -Force
 
 	$model_file_prefix = 
 	"using System;
